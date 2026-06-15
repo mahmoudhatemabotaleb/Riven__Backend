@@ -1,0 +1,67 @@
+@RivenBackend_HostAddress = http://localhost:5090
+@token = {{login.response.body.data.token}}
+
+### Auth - Login (default admin)
+# @name login
+POST {{RivenBackend_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@riven.com",
+  "password": "Admin123!"
+}
+
+###
+
+### Auth - Register
+POST {{RivenBackend_HostAddress}}/api/auth/register
+Content-Type: application/json
+
+{
+  "firstName": "Test",
+  "lastName": "User",
+  "email": "test@example.com",
+  "phoneNumber": "+201234567890",
+  "password": "Test123!"
+}
+
+###
+
+### Cases - Get All
+GET {{RivenBackend_HostAddress}}/api/cases
+Authorization: Bearer {{token}}
+
+###
+
+### Hospitals - Get All
+GET {{RivenBackend_HostAddress}}/api/hospitals
+Authorization: Bearer {{token}}
+
+###
+
+### Patients - Get All
+GET {{RivenBackend_HostAddress}}/api/patients
+Authorization: Bearer {{token}}
+
+###
+
+### Users - Get Me
+GET {{RivenBackend_HostAddress}}/api/users/me
+Authorization: Bearer {{token}}
+
+###
+
+### OTP - Forgot Password
+POST {{RivenBackend_HostAddress}}/api/otp/forgot-password
+Content-Type: application/json
+
+{
+  "email": "user@example.com"
+}
+
+###
+
+### Swagger
+GET {{RivenBackend_HostAddress}}/swagger/index.html
+
+###
