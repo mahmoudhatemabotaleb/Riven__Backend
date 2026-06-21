@@ -1,12 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RivenBackend.Models;
-
 namespace RivenBackend.Data
 {
     public class AppDbContext : DbContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
-
         public DbSet<Patient> Patients { get; set; }
         public DbSet<Case> Cases { get; set; }
         public DbSet<User> Users { get; set; }
@@ -26,21 +24,22 @@ namespace RivenBackend.Data
         public DbSet<StrokeResult> StrokeResults { get; set; }
         public DbSet<OtpVerification> OtpVerifications { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-
-            foreach (var relationship in modelBuilder.Model.GetEntityTypes()
-                .SelectMany(e => e.GetForeignKeys()))
-            {
-                relationship.DeleteBehavior = DeleteBehavior.Restrict;
-            }
-        }
         protected override void ConfigureConventions(ModelConfigurationBuilder builder)
         {
             builder.Properties<string>().HaveColumnType("text");
             builder.Properties<DateTime>().HaveColumnType("timestamptz");
             builder.Properties<DateTime?>().HaveColumnType("timestamptz");
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.UseIdentityByDefaultColumns();
+            foreach (var relationship in modelBuilder.Model.GetEntityTypes()
+                .SelectMany(e => e.GetForeignKeys()))
+            {
+                relationship.DeleteBehavior = DeleteBehavior.Restrict;
+            }
         }
     }
 }
