@@ -16,7 +16,8 @@ namespace RivenBackend.Migrations
                 columns: table => new
                 {
                     HospitalId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("Npgsql:ValueGenerationStrategy", 
+                        Npgsql.EntityFrameworkCore.PostgreSQL.Metadata.NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", maxLength: 100, nullable: false),
                     Address = table.Column<string>(type: "text", maxLength: 200, nullable: false),
                     ContactNumber = table.Column<string>(type: "text", maxLength: 20, nullable: false),
