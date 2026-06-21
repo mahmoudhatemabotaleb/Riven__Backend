@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using RivenBackend.Data;
 using RivenBackend.Middleware;
 using System.Text.Json;
-
 namespace RivenBackend.Extensions
 {
     public static class WebApplicationExtensions
@@ -12,12 +11,9 @@ namespace RivenBackend.Extensions
         {
             if (app.Environment.IsProduction())
                 app.UseHsts();
-
-            await app.ApplyMigrationsInDevelopmentAsync();
-
+            await app.ApplyMigrationsAsync();
             app.UseMiddleware<ExceptionMiddleware>();
             app.UseMiddleware<AuditMiddleware>();
-
             app.Use(async (context, next) =>
             {
                 if (context.Request.Path.StartsWithSegments("/uploads"))
@@ -25,10 +21,8 @@ namespace RivenBackend.Extensions
                     context.Response.StatusCode = StatusCodes.Status404NotFound;
                     return;
                 }
-
                 await next();
             });
-
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -40,13 +34,11 @@ namespace RivenBackend.Extensions
                     options.InjectJavascript("/swagger-auth-helper.js");
                 });
             }
-
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCors("AngularApp");
             app.UseAuthentication();
             app.UseAuthorization();
-
             app.MapHealthChecks("/health", new HealthCheckOptions
             {
                 ResponseWriter = async (context, report) =>
@@ -64,38 +56,31 @@ namespace RivenBackend.Extensions
                     await context.Response.WriteAsync(JsonSerializer.Serialize(response));
                 }
             });
-
             app.MapControllers();
             app.MapHub<RivenBackend.Hubs.TransportHub>("/hubs/transport");
         }
 
-        private static async Task ApplyMigrationsInDevelopmentAsync(this WebApplication app)
+        private static async Task ApplyMigrationsAsync(this WebApplication app)
         {
-            if (!app.Environment.IsDevelopment())
-                return;
-
             using var scope = app.Services.CreateScope();
             var logger = scope.ServiceProvider.GetRequiredService<ILogger<AppDbContext>>();
             var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
             try
             {
+                var isPostgres = db.Database.IsNpgsql();
+                var isSqlServer = db.Database.IsSqlServer();
+
+                logger.LogInformation("Applying migrations for {Provider}...",
+                    isPostgres ? "PostgreSQL" : "SQL Server");
+
                 await db.Database.MigrateAsync();
                 await DbSeeder.SeedAsync(db);
+
                 logger.LogInformation("Database migrations and seed data applied successfully.");
             }
             catch (Exception ex)
             {
-                var serverHint = db.Database.GetConnectionString()?.Split(';')
-                    .FirstOrDefault(p => p.StartsWith("Server=", StringComparison.OrdinalIgnoreCase)
-                        || p.StartsWith("Data Source=", StringComparison.OrdinalIgnoreCase));
-
-                logger.LogCritical(ex,
-                    "Failed to connect to SQL Server ({Server}). " +
-                    "Update ConnectionStrings:DefaultConnection in appsettings.Development.json. " +
-                    "Try: Server=localhost or Server=YOUR_PC_NAME. " +
-                    "Run 'sqlcmd -S localhost -E -Q \"SELECT @@SERVERNAME\"' to find your server.",
-                    serverHint ?? "unknown");
+                logger.LogCritical(ex, "Failed to apply database migrations.");
                 throw;
             }
         }
