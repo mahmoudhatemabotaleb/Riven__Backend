@@ -31,12 +31,12 @@ namespace RivenBackend.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AiReportId"));
 
                     b.Property<string>("AdditionalNotes")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("AfDetectionStatus")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("text");
 
                     b.Property<int>("CaseId")
                         .HasColumnType("int");
@@ -45,29 +45,29 @@ namespace RivenBackend.Migrations
                         .HasColumnType("float");
 
                     b.Property<string>("CtScanResult")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("EcgImageResult")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("EcgSignalResult")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("GenerationDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("NihssScore")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("RiskLevel")
                         .IsRequired()
                         .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("text");
 
                     b.Property<string>("StrokeType")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("text");
 
                     b.HasKey("AiReportId");
 
@@ -88,7 +88,7 @@ namespace RivenBackend.Migrations
                     b.Property<string>("AmbulanceType")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("text");
 
                     b.Property<double?>("CurrentLatitude")
                         .HasColumnType("float");
@@ -108,12 +108,12 @@ namespace RivenBackend.Migrations
                     b.Property<string>("OperationalStatus")
                         .IsRequired()
                         .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("text");
 
                     b.Property<string>("VehicleNumber")
                         .IsRequired()
                         .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("text");
 
                     b.HasKey("AmbulanceId");
 
@@ -135,7 +135,7 @@ namespace RivenBackend.Migrations
 
                     b.Property<string>("FileName")
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("text");
 
                     b.Property<long?>("FileSize")
                         .HasColumnType("bigint");
@@ -143,12 +143,12 @@ namespace RivenBackend.Migrations
                     b.Property<string>("FileUrl")
                         .IsRequired()
                         .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Type")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("UploadedAt")
                         .HasColumnType("datetime2");
@@ -171,17 +171,17 @@ namespace RivenBackend.Migrations
                     b.Property<string>("ActionType")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("text");
 
                     b.Property<string>("EntityId")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("text");
 
                     b.Property<string>("EntityName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("datetime2");
@@ -214,7 +214,7 @@ namespace RivenBackend.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("HandoverNotes")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("HandoverTime")
                         .HasColumnType("datetime2");
@@ -225,7 +225,7 @@ namespace RivenBackend.Migrations
                     b.Property<string>("Location")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("text");
 
                     b.Property<double?>("LocationLatitude")
                         .HasColumnType("float");
@@ -237,23 +237,23 @@ namespace RivenBackend.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("PatientConditionOnArrival")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<int>("PatientId")
                         .HasColumnType("int");
 
                     b.Property<string>("ReceivingPhysician")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Severity")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("text");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -284,18 +284,18 @@ namespace RivenBackend.Migrations
 
                     b.Property<string>("Confidence")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("FileName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Result")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -315,18 +315,18 @@ namespace RivenBackend.Migrations
                     b.Property<string>("Address")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("text");
 
                     b.Property<int>("AvailableStrokeBeds")
                         .HasColumnType("int");
 
                     b.Property<string>("CityStateZip")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("ContactNumber")
                         .IsRequired()
                         .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("text");
 
                     b.Property<bool>("EmergencyBayCleared")
                         .HasColumnType("bit");
@@ -340,23 +340,23 @@ namespace RivenBackend.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("text");
 
                     b.Property<bool>("NeurologistOnStandby")
                         .HasColumnType("bit");
 
                     b.Property<string>("ProfilePicture")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("text");
 
                     b.Property<string>("StrokeCenterType")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("text");
 
                     b.Property<bool>("StrokeTeamNotified")
                         .HasColumnType("bit");
@@ -383,17 +383,17 @@ namespace RivenBackend.Migrations
                     b.Property<string>("Dose")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Frequency")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("text");
 
                     b.Property<string>("MedicationName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("text");
 
                     b.HasKey("MedicationId");
 
@@ -416,12 +416,12 @@ namespace RivenBackend.Migrations
                     b.Property<string>("DomainScores")
                         .IsRequired()
                         .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("text");
 
                     b.Property<string>("SeverityLabel")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("text");
 
                     b.Property<int>("TotalScore")
                         .HasColumnType("int");
@@ -453,7 +453,7 @@ namespace RivenBackend.Migrations
 
                     b.Property<string>("Message")
                         .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("SentTime")
                         .HasColumnType("datetime2");
@@ -461,11 +461,11 @@ namespace RivenBackend.Migrations
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Type")
                         .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("text");
 
                     b.Property<int?>("UserId")
                         .HasColumnType("int");
@@ -492,7 +492,7 @@ namespace RivenBackend.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("ExpiresAt")
                         .HasColumnType("datetime2");
@@ -502,7 +502,7 @@ namespace RivenBackend.Migrations
 
                     b.Property<string>("OtpCode")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -523,12 +523,12 @@ namespace RivenBackend.Migrations
                     b.Property<string>("Gender")
                         .IsRequired()
                         .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("RegistrationDate")
                         .HasColumnType("datetime2");
@@ -595,7 +595,7 @@ namespace RivenBackend.Migrations
                     b.Property<string>("RoleName")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("text");
 
                     b.HasKey("RoleId");
 
@@ -615,18 +615,18 @@ namespace RivenBackend.Migrations
 
                     b.Property<string>("Confidence")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Diagnosis")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("FileName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<int>("TotalImagesProcessed")
                         .HasColumnType("int");
@@ -645,14 +645,14 @@ namespace RivenBackend.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SymptomsId"));
 
                     b.Property<string>("AdditionalNotes")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<int>("CaseId")
                         .HasColumnType("int");
 
                     b.Property<string>("SelectedSymptoms")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.HasKey("SymptomsId");
 
@@ -676,12 +676,12 @@ namespace RivenBackend.Migrations
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("text");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("text");
 
                     b.Property<int>("HospitalId")
                         .HasColumnType("int");
@@ -689,19 +689,19 @@ namespace RivenBackend.Migrations
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("text");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("text");
 
                     b.Property<string>("ProfilePicture")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<int>("RoleId")
                         .HasColumnType("int");
@@ -709,7 +709,7 @@ namespace RivenBackend.Migrations
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("text");
 
                     b.HasKey("UserId");
 
@@ -755,7 +755,7 @@ namespace RivenBackend.Migrations
                     b.Property<string>("TemperatureUnit")
                         .IsRequired()
                         .HasMaxLength(1)
-                        .HasColumnType("nvarchar(1)");
+                        .HasColumnType("text");
 
                     b.HasKey("VitalId");
 

@@ -12,33 +12,25 @@ namespace RivenBackend.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "EcgResults",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FileName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Result = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Confidence = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_EcgResults", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Hospitals",
                 columns: table => new
                 {
                     HospitalId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Address = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    ContactNumber = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    StrokeCenterType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false)
+                    Name = table.Column<string>(type: "text", maxLength: 100, nullable: false),
+                    Address = table.Column<string>(type: "text", maxLength: 200, nullable: false),
+                    ContactNumber = table.Column<string>(type: "text", maxLength: 20, nullable: false),
+                    StrokeCenterType = table.Column<string>(type: "text", maxLength: 50, nullable: false),
+                    Status = table.Column<string>(type: "text", maxLength: 20, nullable: false),
+                    AvailableStrokeBeds = table.Column<int>(type: "int", nullable: false),
+                    Latitude = table.Column<double>(type: "float", nullable: false),
+                    Longitude = table.Column<double>(type: "float", nullable: false),
+                    WaitTimeMinutes = table.Column<int>(type: "int", nullable: false),
+                    StrokeTeamNotified = table.Column<bool>(type: "bit", nullable: false),
+                    EmergencyBayCleared = table.Column<bool>(type: "bit", nullable: false),
+                    NeurologistOnStandby = table.Column<bool>(type: "bit", nullable: false),
+                    CityStateZip = table.Column<string>(type: "text", nullable: true),
+                    ProfilePicture = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -51,8 +43,8 @@ namespace RivenBackend.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    OtpCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "text", nullable: false),
+                    OtpCode = table.Column<string>(type: "text", nullable: false),
                     ExpiresAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsUsed = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
@@ -68,8 +60,8 @@ namespace RivenBackend.Migrations
                 {
                     PatientId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Gender = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    Name = table.Column<string>(type: "text", maxLength: 100, nullable: false),
+                    Gender = table.Column<string>(type: "text", maxLength: 10, nullable: false),
                     Age = table.Column<int>(type: "int", nullable: false),
                     RegistrationDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -84,11 +76,29 @@ namespace RivenBackend.Migrations
                 {
                     RoleId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    RoleName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
+                    RoleName = table.Column<string>(type: "text", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Roles", x => x.RoleId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "StrokeResults",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CaseId = table.Column<int>(type: "int", nullable: false),
+                    FileName = table.Column<string>(type: "text", nullable: false),
+                    Diagnosis = table.Column<string>(type: "text", nullable: false),
+                    Confidence = table.Column<string>(type: "text", nullable: false),
+                    TotalImagesProcessed = table.Column<int>(type: "int", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StrokeResults", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -97,10 +107,14 @@ namespace RivenBackend.Migrations
                 {
                     AmbulanceId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    VehicleNumber = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    AmbulanceType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    OperationalStatus = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    HospitalId = table.Column<int>(type: "int", nullable: false)
+                    VehicleNumber = table.Column<string>(type: "text", maxLength: 20, nullable: false),
+                    AmbulanceType = table.Column<string>(type: "text", maxLength: 50, nullable: false),
+                    OperationalStatus = table.Column<string>(type: "text", maxLength: 20, nullable: false),
+                    HospitalId = table.Column<int>(type: "int", nullable: false),
+                    CurrentLatitude = table.Column<double>(type: "float", nullable: true),
+                    CurrentLongitude = table.Column<double>(type: "float", nullable: true),
+                    EtaMinutes = table.Column<int>(type: "int", nullable: true),
+                    DistanceMiles = table.Column<double>(type: "float", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -119,14 +133,16 @@ namespace RivenBackend.Migrations
                 {
                     UserId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FullName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FirstName = table.Column<string>(type: "text", maxLength: 50, nullable: false),
+                    LastName = table.Column<string>(type: "text", maxLength: 50, nullable: false),
+                    Email = table.Column<string>(type: "text", maxLength: 100, nullable: false),
+                    PhoneNumber = table.Column<string>(type: "text", maxLength: 20, nullable: false),
+                    PasswordHash = table.Column<string>(type: "text", nullable: false),
                     RoleId = table.Column<int>(type: "int", nullable: false),
                     HospitalId = table.Column<int>(type: "int", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    AccountCreationDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Status = table.Column<string>(type: "text", maxLength: 20, nullable: false),
+                    AccountCreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ProfilePicture = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -152,10 +168,10 @@ namespace RivenBackend.Migrations
                     LogId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<int>(type: "int", nullable: false),
-                    EntityName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    EntityName = table.Column<string>(type: "text", maxLength: 100, nullable: false),
                     Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ActionType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    EntityId = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
+                    ActionType = table.Column<string>(type: "text", maxLength: 50, nullable: false),
+                    EntityId = table.Column<string>(type: "text", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -178,11 +194,18 @@ namespace RivenBackend.Migrations
                     UserId = table.Column<int>(type: "int", nullable: false),
                     AmbulanceId = table.Column<int>(type: "int", nullable: false),
                     HospitalId = table.Column<int>(type: "int", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Severity = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Status = table.Column<string>(type: "text", maxLength: 50, nullable: false),
+                    Severity = table.Column<string>(type: "text", maxLength: 50, nullable: false),
                     OnsetTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CaseDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Location = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false)
+                    Location = table.Column<string>(type: "text", maxLength: 200, nullable: false),
+                    LocationLatitude = table.Column<double>(type: "float", nullable: true),
+                    LocationLongitude = table.Column<double>(type: "float", nullable: true),
+                    ArrivedTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    HandoverTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ReceivingPhysician = table.Column<string>(type: "text", nullable: true),
+                    PatientConditionOnArrival = table.Column<string>(type: "text", nullable: true),
+                    HandoverNotes = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -220,11 +243,16 @@ namespace RivenBackend.Migrations
                     AiReportId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CaseId = table.Column<int>(type: "int", nullable: false),
-                    StrokeType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    AfDetectionStatus = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    StrokeType = table.Column<string>(type: "text", maxLength: 50, nullable: false),
+                    AfDetectionStatus = table.Column<string>(type: "text", maxLength: 50, nullable: false),
                     ConfidenceScore = table.Column<double>(type: "float", nullable: false),
                     GenerationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    RiskLevel = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false)
+                    RiskLevel = table.Column<string>(type: "text", maxLength: 20, nullable: false),
+                    NihssScore = table.Column<string>(type: "text", nullable: true),
+                    EcgImageResult = table.Column<string>(type: "text", nullable: true),
+                    EcgSignalResult = table.Column<string>(type: "text", nullable: true),
+                    CtScanResult = table.Column<string>(type: "text", nullable: true),
+                    AdditionalNotes = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -244,8 +272,11 @@ namespace RivenBackend.Migrations
                     AttachmentId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CaseId = table.Column<int>(type: "int", nullable: false),
-                    FileUrl = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
-                    Type = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
+                    FileUrl = table.Column<string>(type: "text", maxLength: 500, nullable: false),
+                    Type = table.Column<string>(type: "text", maxLength: 50, nullable: false),
+                    FileName = table.Column<string>(type: "text", maxLength: 100, nullable: true),
+                    FileSize = table.Column<long>(type: "bigint", nullable: true),
+                    UploadedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -259,15 +290,38 @@ namespace RivenBackend.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "EcgResults",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CaseId = table.Column<int>(type: "int", nullable: false),
+                    FileName = table.Column<string>(type: "text", nullable: false),
+                    Result = table.Column<string>(type: "text", nullable: false),
+                    Confidence = table.Column<string>(type: "text", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EcgResults", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_EcgResults_Cases_CaseId",
+                        column: x => x.CaseId,
+                        principalTable: "Cases",
+                        principalColumn: "CaseId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Medications",
                 columns: table => new
                 {
                     MedicationId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CaseId = table.Column<int>(type: "int", nullable: false),
-                    MedicationName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Dose = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Frequency = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
+                    MedicationName = table.Column<string>(type: "text", maxLength: 100, nullable: false),
+                    Dose = table.Column<string>(type: "text", maxLength: 50, nullable: false),
+                    Frequency = table.Column<string>(type: "text", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -287,9 +341,9 @@ namespace RivenBackend.Migrations
                     NihssId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CaseId = table.Column<int>(type: "int", nullable: false),
-                    DomainScores = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    DomainScores = table.Column<string>(type: "text", maxLength: 500, nullable: false),
                     TotalScore = table.Column<int>(type: "int", nullable: false),
-                    SeverityLabel = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
+                    SeverityLabel = table.Column<string>(type: "text", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -310,8 +364,12 @@ namespace RivenBackend.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     HospitalId = table.Column<int>(type: "int", nullable: false),
                     CaseId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: true),
                     SentTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false)
+                    Status = table.Column<string>(type: "text", maxLength: 20, nullable: false),
+                    Message = table.Column<string>(type: "text", maxLength: 200, nullable: true),
+                    Type = table.Column<string>(type: "text", maxLength: 20, nullable: true),
+                    IsRead = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -337,11 +395,15 @@ namespace RivenBackend.Migrations
                     RiskFactorId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CaseId = table.Column<int>(type: "int", nullable: false),
+                    PreviousStroke = table.Column<bool>(type: "bit", nullable: false),
+                    Hypertension = table.Column<bool>(type: "bit", nullable: false),
                     Diabetes = table.Column<bool>(type: "bit", nullable: false),
                     HeartDisease = table.Column<bool>(type: "bit", nullable: false),
-                    SmokingStatus = table.Column<bool>(type: "bit", nullable: false),
-                    PreviousStroke = table.Column<bool>(type: "bit", nullable: false),
-                    AtrialFibrillation = table.Column<bool>(type: "bit", nullable: false)
+                    HighCholesterol = table.Column<bool>(type: "bit", nullable: false),
+                    Smoking = table.Column<bool>(type: "bit", nullable: false),
+                    Obesity = table.Column<bool>(type: "bit", nullable: false),
+                    SleepApnea = table.Column<bool>(type: "bit", nullable: false),
+                    PhysicalInactive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -361,12 +423,8 @@ namespace RivenBackend.Migrations
                     SymptomsId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CaseId = table.Column<int>(type: "int", nullable: false),
-                    FacialDroop = table.Column<bool>(type: "bit", nullable: false),
-                    ArmWeakness = table.Column<bool>(type: "bit", nullable: false),
-                    SpeechDifficulty = table.Column<bool>(type: "bit", nullable: false),
-                    VisionLoss = table.Column<bool>(type: "bit", nullable: false),
-                    BalanceLoss = table.Column<bool>(type: "bit", nullable: false),
-                    SevereHeadache = table.Column<bool>(type: "bit", nullable: false)
+                    SelectedSymptoms = table.Column<string>(type: "text", nullable: false),
+                    AdditionalNotes = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -387,9 +445,12 @@ namespace RivenBackend.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CaseId = table.Column<int>(type: "int", nullable: false),
                     SpO2 = table.Column<double>(type: "float", nullable: false),
-                    BloodPressure = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    SystolicBP = table.Column<int>(type: "int", nullable: false),
+                    DiastolicBP = table.Column<int>(type: "int", nullable: false),
                     HeartRate = table.Column<double>(type: "float", nullable: false),
                     Temperature = table.Column<double>(type: "float", nullable: false),
+                    TemperatureUnit = table.Column<string>(type: "text", maxLength: 1, nullable: false),
+                    RespiratoryRate = table.Column<double>(type: "float", nullable: false),
                     GlucoseLevel = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>
@@ -443,6 +504,11 @@ namespace RivenBackend.Migrations
                 name: "IX_Cases_UserId",
                 table: "Cases",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EcgResults_CaseId",
+                table: "EcgResults",
+                column: "CaseId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Medications_CaseId",
@@ -523,6 +589,9 @@ namespace RivenBackend.Migrations
 
             migrationBuilder.DropTable(
                 name: "RiskFactors");
+
+            migrationBuilder.DropTable(
+                name: "StrokeResults");
 
             migrationBuilder.DropTable(
                 name: "Symptoms");

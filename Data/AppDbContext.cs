@@ -36,5 +36,9 @@ namespace RivenBackend.Data
                 relationship.DeleteBehavior = DeleteBehavior.Restrict;
             }
         }
+        protected override void ConfigureConventions(ModelConfigurationBuilder builder)
+        {
+            builder.Properties<string>().HaveColumnType("text");
+        }
     }
 }
