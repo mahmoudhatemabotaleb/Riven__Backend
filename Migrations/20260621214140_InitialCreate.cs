@@ -45,9 +45,9 @@ namespace RivenBackend.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Email = table.Column<string>(type: "text", nullable: false),
                     OtpCode = table.Column<string>(type: "text", nullable: false),
-                    ExpiresAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ExpiresAt = table.Column<DateTime>(type: "timestamptz", nullable: false),
                     IsUsed = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "timestamptz", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -63,7 +63,7 @@ namespace RivenBackend.Migrations
                     Name = table.Column<string>(type: "text", maxLength: 100, nullable: false),
                     Gender = table.Column<string>(type: "text", maxLength: 10, nullable: false),
                     Age = table.Column<int>(type: "int", nullable: false),
-                    RegistrationDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    RegistrationDate = table.Column<DateTime>(type: "timestamptz", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -94,7 +94,7 @@ namespace RivenBackend.Migrations
                     Diagnosis = table.Column<string>(type: "text", nullable: false),
                     Confidence = table.Column<string>(type: "text", nullable: false),
                     TotalImagesProcessed = table.Column<int>(type: "int", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "timestamptz", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -141,7 +141,7 @@ namespace RivenBackend.Migrations
                     RoleId = table.Column<int>(type: "int", nullable: false),
                     HospitalId = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<string>(type: "text", maxLength: 20, nullable: false),
-                    AccountCreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    AccountCreationDate = table.Column<DateTime>(type: "timestamptz", nullable: false),
                     ProfilePicture = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
@@ -169,7 +169,7 @@ namespace RivenBackend.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<int>(type: "int", nullable: false),
                     EntityName = table.Column<string>(type: "text", maxLength: 100, nullable: false),
-                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Timestamp = table.Column<DateTime>(type: "timestamptz", nullable: false),
                     ActionType = table.Column<string>(type: "text", maxLength: 50, nullable: false),
                     EntityId = table.Column<string>(type: "text", maxLength: 50, nullable: false)
                 },
@@ -196,13 +196,13 @@ namespace RivenBackend.Migrations
                     HospitalId = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<string>(type: "text", maxLength: 50, nullable: false),
                     Severity = table.Column<string>(type: "text", maxLength: 50, nullable: false),
-                    OnsetTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CaseDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    OnsetTime = table.Column<DateTime>(type: "timestamptz", nullable: false),
+                    CaseDate = table.Column<DateTime>(type: "timestamptz", nullable: false),
                     Location = table.Column<string>(type: "text", maxLength: 200, nullable: false),
                     LocationLatitude = table.Column<double>(type: "float", nullable: true),
                     LocationLongitude = table.Column<double>(type: "float", nullable: true),
-                    ArrivedTime = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    HandoverTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ArrivedTime = table.Column<DateTime>(type: "timestamptz", nullable: true),
+                    HandoverTime = table.Column<DateTime>(type: "timestamptz", nullable: true),
                     ReceivingPhysician = table.Column<string>(type: "text", nullable: true),
                     PatientConditionOnArrival = table.Column<string>(type: "text", nullable: true),
                     HandoverNotes = table.Column<string>(type: "text", nullable: true)
@@ -246,7 +246,7 @@ namespace RivenBackend.Migrations
                     StrokeType = table.Column<string>(type: "text", maxLength: 50, nullable: false),
                     AfDetectionStatus = table.Column<string>(type: "text", maxLength: 50, nullable: false),
                     ConfidenceScore = table.Column<double>(type: "float", nullable: false),
-                    GenerationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    GenerationDate = table.Column<DateTime>(type: "timestamptz", nullable: false),
                     RiskLevel = table.Column<string>(type: "text", maxLength: 20, nullable: false),
                     NihssScore = table.Column<string>(type: "text", nullable: true),
                     EcgImageResult = table.Column<string>(type: "text", nullable: true),
@@ -276,7 +276,7 @@ namespace RivenBackend.Migrations
                     Type = table.Column<string>(type: "text", maxLength: 50, nullable: false),
                     FileName = table.Column<string>(type: "text", maxLength: 100, nullable: true),
                     FileSize = table.Column<long>(type: "bigint", nullable: true),
-                    UploadedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    UploadedAt = table.Column<DateTime>(type: "timestamptz", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -299,7 +299,7 @@ namespace RivenBackend.Migrations
                     FileName = table.Column<string>(type: "text", nullable: false),
                     Result = table.Column<string>(type: "text", nullable: false),
                     Confidence = table.Column<string>(type: "text", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "timestamptz", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -365,7 +365,7 @@ namespace RivenBackend.Migrations
                     HospitalId = table.Column<int>(type: "int", nullable: false),
                     CaseId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: true),
-                    SentTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    SentTime = table.Column<DateTime>(type: "timestamptz", nullable: false),
                     Status = table.Column<string>(type: "text", maxLength: 20, nullable: false),
                     Message = table.Column<string>(type: "text", maxLength: 200, nullable: true),
                     Type = table.Column<string>(type: "text", maxLength: 20, nullable: true),

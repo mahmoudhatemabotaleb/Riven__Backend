@@ -39,6 +39,8 @@ namespace RivenBackend.Data
         protected override void ConfigureConventions(ModelConfigurationBuilder builder)
         {
             builder.Properties<string>().HaveColumnType("text");
+            builder.Properties<DateTime>().HaveColumnType("timestamptz");
+            builder.Properties<DateTime?>().HaveColumnType("timestamptz");
         }
     }
 }

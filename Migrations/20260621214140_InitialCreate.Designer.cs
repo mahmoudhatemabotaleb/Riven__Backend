@@ -12,7 +12,7 @@ using RivenBackend.Data;
 namespace RivenBackend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260621205147_InitialCreate")]
+    [Migration("20260621214140_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -57,7 +57,7 @@ namespace RivenBackend.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("GenerationDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamptz");
 
                     b.Property<string>("NihssScore")
                         .HasColumnType("text");
@@ -154,7 +154,7 @@ namespace RivenBackend.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UploadedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamptz");
 
                     b.HasKey("AttachmentId");
 
@@ -187,7 +187,7 @@ namespace RivenBackend.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("Timestamp")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamptz");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -211,16 +211,16 @@ namespace RivenBackend.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("ArrivedTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamptz");
 
                     b.Property<DateTime>("CaseDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamptz");
 
                     b.Property<string>("HandoverNotes")
                         .HasColumnType("text");
 
                     b.Property<DateTime?>("HandoverTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamptz");
 
                     b.Property<int>("HospitalId")
                         .HasColumnType("int");
@@ -237,7 +237,7 @@ namespace RivenBackend.Migrations
                         .HasColumnType("float");
 
                     b.Property<DateTime>("OnsetTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamptz");
 
                     b.Property<string>("PatientConditionOnArrival")
                         .HasColumnType("text");
@@ -290,7 +290,7 @@ namespace RivenBackend.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamptz");
 
                     b.Property<string>("FileName")
                         .IsRequired()
@@ -459,7 +459,7 @@ namespace RivenBackend.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("SentTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamptz");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -491,14 +491,14 @@ namespace RivenBackend.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamptz");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("ExpiresAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamptz");
 
                     b.Property<bool>("IsUsed")
                         .HasColumnType("bit");
@@ -534,7 +534,7 @@ namespace RivenBackend.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("RegistrationDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamptz");
 
                     b.HasKey("PatientId");
 
@@ -621,7 +621,7 @@ namespace RivenBackend.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamptz");
 
                     b.Property<string>("Diagnosis")
                         .IsRequired()
@@ -674,7 +674,7 @@ namespace RivenBackend.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
 
                     b.Property<DateTime>("AccountCreationDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamptz");
 
                     b.Property<string>("Email")
                         .IsRequired()
