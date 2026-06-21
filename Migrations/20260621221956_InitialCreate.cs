@@ -26,9 +26,9 @@ namespace RivenBackend.Migrations
                     Latitude = table.Column<double>(type: "float", nullable: false),
                     Longitude = table.Column<double>(type: "float", nullable: false),
                     WaitTimeMinutes = table.Column<int>(type: "int", nullable: false),
-                    StrokeTeamNotified = table.Column<bool>(type: "bit", nullable: false),
-                    EmergencyBayCleared = table.Column<bool>(type: "bit", nullable: false),
-                    NeurologistOnStandby = table.Column<bool>(type: "bit", nullable: false),
+                    StrokeTeamNotified = table.Column<bool>(type: "boolean", nullable: false),
+                    EmergencyBayCleared = table.Column<bool>(type: "boolean", nullable: false),
+                    NeurologistOnStandby = table.Column<bool>(type: "boolean", nullable: false),
                     CityStateZip = table.Column<string>(type: "text", nullable: true),
                     ProfilePicture = table.Column<string>(type: "text", nullable: true)
                 },
@@ -46,7 +46,7 @@ namespace RivenBackend.Migrations
                     Email = table.Column<string>(type: "text", nullable: false),
                     OtpCode = table.Column<string>(type: "text", nullable: false),
                     ExpiresAt = table.Column<DateTime>(type: "timestamptz", nullable: false),
-                    IsUsed = table.Column<bool>(type: "bit", nullable: false),
+                    IsUsed = table.Column<bool>(type: "boolean", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamptz", nullable: false)
                 },
                 constraints: table =>
@@ -369,7 +369,7 @@ namespace RivenBackend.Migrations
                     Status = table.Column<string>(type: "text", maxLength: 20, nullable: false),
                     Message = table.Column<string>(type: "text", maxLength: 200, nullable: true),
                     Type = table.Column<string>(type: "text", maxLength: 20, nullable: true),
-                    IsRead = table.Column<bool>(type: "bit", nullable: false)
+                    IsRead = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -395,15 +395,15 @@ namespace RivenBackend.Migrations
                     RiskFactorId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CaseId = table.Column<int>(type: "int", nullable: false),
-                    PreviousStroke = table.Column<bool>(type: "bit", nullable: false),
-                    Hypertension = table.Column<bool>(type: "bit", nullable: false),
-                    Diabetes = table.Column<bool>(type: "bit", nullable: false),
-                    HeartDisease = table.Column<bool>(type: "bit", nullable: false),
-                    HighCholesterol = table.Column<bool>(type: "bit", nullable: false),
-                    Smoking = table.Column<bool>(type: "bit", nullable: false),
-                    Obesity = table.Column<bool>(type: "bit", nullable: false),
-                    SleepApnea = table.Column<bool>(type: "bit", nullable: false),
-                    PhysicalInactive = table.Column<bool>(type: "bit", nullable: false)
+                    PreviousStroke = table.Column<bool>(type: "boolean", nullable: false),
+                    Hypertension = table.Column<bool>(type: "boolean", nullable: false),
+                    Diabetes = table.Column<bool>(type: "boolean", nullable: false),
+                    HeartDisease = table.Column<bool>(type: "boolean", nullable: false),
+                    HighCholesterol = table.Column<bool>(type: "boolean", nullable: false),
+                    Smoking = table.Column<bool>(type: "boolean", nullable: false),
+                    Obesity = table.Column<bool>(type: "boolean", nullable: false),
+                    SleepApnea = table.Column<bool>(type: "boolean", nullable: false),
+                    PhysicalInactive = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {

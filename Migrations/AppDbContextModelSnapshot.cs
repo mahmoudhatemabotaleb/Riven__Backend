@@ -331,7 +331,7 @@ namespace RivenBackend.Migrations
                         .HasColumnType("text");
 
                     b.Property<bool>("EmergencyBayCleared")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<double>("Latitude")
                         .HasColumnType("float");
@@ -345,7 +345,7 @@ namespace RivenBackend.Migrations
                         .HasColumnType("text");
 
                     b.Property<bool>("NeurologistOnStandby")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("ProfilePicture")
                         .HasColumnType("text");
@@ -361,7 +361,7 @@ namespace RivenBackend.Migrations
                         .HasColumnType("text");
 
                     b.Property<bool>("StrokeTeamNotified")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<int>("WaitTimeMinutes")
                         .HasColumnType("int");
@@ -451,7 +451,7 @@ namespace RivenBackend.Migrations
                         .HasColumnType("int");
 
                     b.Property<bool>("IsRead")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Message")
                         .HasMaxLength(200)
@@ -500,7 +500,7 @@ namespace RivenBackend.Migrations
                         .HasColumnType("timestamptz");
 
                     b.Property<bool>("IsUsed")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("OtpCode")
                         .IsRequired()
@@ -552,31 +552,31 @@ namespace RivenBackend.Migrations
                         .HasColumnType("int");
 
                     b.Property<bool>("Diabetes")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("HeartDisease")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("HighCholesterol")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("Hypertension")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("Obesity")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("PhysicalInactive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("PreviousStroke")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("SleepApnea")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("Smoking")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.HasKey("RiskFactorId");
 

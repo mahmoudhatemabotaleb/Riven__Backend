@@ -24,13 +24,6 @@ namespace RivenBackend.Data
         public DbSet<StrokeResult> StrokeResults { get; set; }
         public DbSet<OtpVerification> OtpVerifications { get; set; }
 
-        protected override void ConfigureConventions(ModelConfigurationBuilder builder)
-        {
-            builder.Properties<string>().HaveColumnType("text");
-            builder.Properties<DateTime>().HaveColumnType("timestamptz");
-            builder.Properties<DateTime?>().HaveColumnType("timestamptz");
-        }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -40,6 +33,14 @@ namespace RivenBackend.Data
             {
                 relationship.DeleteBehavior = DeleteBehavior.Restrict;
             }
+        }
+        protected override void ConfigureConventions(ModelConfigurationBuilder builder)
+        {
+            builder.Properties<string>().HaveColumnType("text");
+            builder.Properties<DateTime>().HaveColumnType("timestamptz");
+            builder.Properties<DateTime?>().HaveColumnType("timestamptz");
+            builder.Properties<bool>().HaveColumnType("boolean");
+            builder.Properties<bool?>().HaveColumnType("boolean");
         }
     }
 }
