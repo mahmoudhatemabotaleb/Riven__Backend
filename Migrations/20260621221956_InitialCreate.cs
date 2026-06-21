@@ -43,7 +43,8 @@ namespace RivenBackend.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("Npgsql:ValueGenerationStrategy",
+                    Npgsql.EntityFrameworkCore.PostgreSQL.Metadata.NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Email = table.Column<string>(type: "text", nullable: false),
                     OtpCode = table.Column<string>(type: "text", nullable: false),
                     ExpiresAt = table.Column<DateTime>(type: "timestamptz", nullable: false),
@@ -60,7 +61,8 @@ namespace RivenBackend.Migrations
                 columns: table => new
                 {
                     PatientId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                       .Annotation("Npgsql:ValueGenerationStrategy",
+                    Npgsql.EntityFrameworkCore.PostgreSQL.Metadata.NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", maxLength: 100, nullable: false),
                     Gender = table.Column<string>(type: "text", maxLength: 10, nullable: false),
                     Age = table.Column<int>(type: "int", nullable: false),
@@ -76,7 +78,8 @@ namespace RivenBackend.Migrations
                 columns: table => new
                 {
                     RoleId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("Npgsql:ValueGenerationStrategy",
+                    Npgsql.EntityFrameworkCore.PostgreSQL.Metadata.NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     RoleName = table.Column<string>(type: "text", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
@@ -89,7 +92,8 @@ namespace RivenBackend.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("Npgsql:ValueGenerationStrategy",
+                    Npgsql.EntityFrameworkCore.PostgreSQL.Metadata.NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CaseId = table.Column<int>(type: "int", nullable: false),
                     FileName = table.Column<string>(type: "text", nullable: false),
                     Diagnosis = table.Column<string>(type: "text", nullable: false),
@@ -107,7 +111,8 @@ namespace RivenBackend.Migrations
                 columns: table => new
                 {
                     AmbulanceId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("Npgsql:ValueGenerationStrategy",
+                    Npgsql.EntityFrameworkCore.PostgreSQL.Metadata.NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     VehicleNumber = table.Column<string>(type: "text", maxLength: 20, nullable: false),
                     AmbulanceType = table.Column<string>(type: "text", maxLength: 50, nullable: false),
                     OperationalStatus = table.Column<string>(type: "text", maxLength: 20, nullable: false),
@@ -133,7 +138,8 @@ namespace RivenBackend.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("Npgsql:ValueGenerationStrategy",
+                    Npgsql.EntityFrameworkCore.PostgreSQL.Metadata.NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     FirstName = table.Column<string>(type: "text", maxLength: 50, nullable: false),
                     LastName = table.Column<string>(type: "text", maxLength: 50, nullable: false),
                     Email = table.Column<string>(type: "text", maxLength: 100, nullable: false),
@@ -167,7 +173,8 @@ namespace RivenBackend.Migrations
                 columns: table => new
                 {
                     LogId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("Npgsql:ValueGenerationStrategy",
+                    Npgsql.EntityFrameworkCore.PostgreSQL.Metadata.NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     UserId = table.Column<int>(type: "int", nullable: false),
                     EntityName = table.Column<string>(type: "text", maxLength: 100, nullable: false),
                     Timestamp = table.Column<DateTime>(type: "timestamptz", nullable: false),
@@ -190,7 +197,8 @@ namespace RivenBackend.Migrations
                 columns: table => new
                 {
                     CaseId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("Npgsql:ValueGenerationStrategy",
+                    Npgsql.EntityFrameworkCore.PostgreSQL.Metadata.NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     PatientId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false),
                     AmbulanceId = table.Column<int>(type: "int", nullable: false),
@@ -242,7 +250,8 @@ namespace RivenBackend.Migrations
                 columns: table => new
                 {
                     AiReportId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("Npgsql:ValueGenerationStrategy",
+                    Npgsql.EntityFrameworkCore.PostgreSQL.Metadata.NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CaseId = table.Column<int>(type: "int", nullable: false),
                     StrokeType = table.Column<string>(type: "text", maxLength: 50, nullable: false),
                     AfDetectionStatus = table.Column<string>(type: "text", maxLength: 50, nullable: false),
@@ -271,7 +280,8 @@ namespace RivenBackend.Migrations
                 columns: table => new
                 {
                     AttachmentId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("Npgsql:ValueGenerationStrategy",
+                    Npgsql.EntityFrameworkCore.PostgreSQL.Metadata.NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CaseId = table.Column<int>(type: "int", nullable: false),
                     FileUrl = table.Column<string>(type: "text", maxLength: 500, nullable: false),
                     Type = table.Column<string>(type: "text", maxLength: 50, nullable: false),
@@ -295,7 +305,8 @@ namespace RivenBackend.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("Npgsql:ValueGenerationStrategy",
+                    Npgsql.EntityFrameworkCore.PostgreSQL.Metadata.NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CaseId = table.Column<int>(type: "int", nullable: false),
                     FileName = table.Column<string>(type: "text", nullable: false),
                     Result = table.Column<string>(type: "text", nullable: false),
@@ -318,7 +329,8 @@ namespace RivenBackend.Migrations
                 columns: table => new
                 {
                     MedicationId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("Npgsql:ValueGenerationStrategy",
+                    Npgsql.EntityFrameworkCore.PostgreSQL.Metadata.NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CaseId = table.Column<int>(type: "int", nullable: false),
                     MedicationName = table.Column<string>(type: "text", maxLength: 100, nullable: false),
                     Dose = table.Column<string>(type: "text", maxLength: 50, nullable: false),
@@ -340,7 +352,8 @@ namespace RivenBackend.Migrations
                 columns: table => new
                 {
                     NihssId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("Npgsql:ValueGenerationStrategy",
+                    Npgsql.EntityFrameworkCore.PostgreSQL.Metadata.NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CaseId = table.Column<int>(type: "int", nullable: false),
                     DomainScores = table.Column<string>(type: "text", maxLength: 500, nullable: false),
                     TotalScore = table.Column<int>(type: "int", nullable: false),
@@ -362,7 +375,8 @@ namespace RivenBackend.Migrations
                 columns: table => new
                 {
                     NotificationId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("Npgsql:ValueGenerationStrategy",
+                    Npgsql.EntityFrameworkCore.PostgreSQL.Metadata.NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     HospitalId = table.Column<int>(type: "int", nullable: false),
                     CaseId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: true),
@@ -394,7 +408,8 @@ namespace RivenBackend.Migrations
                 columns: table => new
                 {
                     RiskFactorId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("Npgsql:ValueGenerationStrategy",
+                    Npgsql.EntityFrameworkCore.PostgreSQL.Metadata.NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CaseId = table.Column<int>(type: "int", nullable: false),
                     PreviousStroke = table.Column<bool>(type: "boolean", nullable: false),
                     Hypertension = table.Column<bool>(type: "boolean", nullable: false),
@@ -422,7 +437,8 @@ namespace RivenBackend.Migrations
                 columns: table => new
                 {
                     SymptomsId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("Npgsql:ValueGenerationStrategy",
+                    Npgsql.EntityFrameworkCore.PostgreSQL.Metadata.NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CaseId = table.Column<int>(type: "int", nullable: false),
                     SelectedSymptoms = table.Column<string>(type: "text", nullable: false),
                     AdditionalNotes = table.Column<string>(type: "text", nullable: true)
@@ -443,7 +459,8 @@ namespace RivenBackend.Migrations
                 columns: table => new
                 {
                     VitalId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("Npgsql:ValueGenerationStrategy",
+                    Npgsql.EntityFrameworkCore.PostgreSQL.Metadata.NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CaseId = table.Column<int>(type: "int", nullable: false),
                     SpO2 = table.Column<double>(type: "float", nullable: false),
                     SystolicBP = table.Column<int>(type: "int", nullable: false),
