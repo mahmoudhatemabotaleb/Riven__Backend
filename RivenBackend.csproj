@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>riven-backend-dev</UserSecretsId>
+	<UseAppHost>false</UseAppHost>
   </PropertyGroup>
 
   <ItemGroup>
