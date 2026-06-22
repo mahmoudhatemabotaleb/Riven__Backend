@@ -36,7 +36,7 @@ namespace RivenBackend.Extensions
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseCors("AngularApp");
+            app.UseCors("AllowAll");
             app.UseAuthentication();
             app.UseAuthorization();
             app.MapHealthChecks("/health", new HealthCheckOptions
