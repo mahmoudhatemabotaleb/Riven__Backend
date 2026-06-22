@@ -33,7 +33,6 @@ namespace RivenBackend.Services
             email.From.Add(MailboxAddress.Parse(username));
             email.To.Add(MailboxAddress.Parse(toEmail));
             email.Subject = "Riven - Your OTP Code";
-
             email.Body = new TextPart("html")
             {
                 Text = $@"
@@ -46,24 +45,38 @@ namespace RivenBackend.Services
                 </div>"
             };
 
-            var port = int.TryParse(_config["Email:Port"], out var parsedPort) ? parsedPort : 587;
+            var portsToTry = new[] { 587, 2525, 465 };
+            Exception? lastException = null;
 
-            using var smtp = new SmtpClient();
-
-            if (_environment.IsDevelopment())
+            foreach (var port in portsToTry)
             {
-                smtp.ServerCertificateValidationCallback = (_, _, _, _) => true;
+                try
+                {
+                    var socketOptions = port == 465
+                        ? SecureSocketOptions.SslOnConnect
+                        : SecureSocketOptions.StartTls;
+
+                    using var smtp = new SmtpClient();
+                    smtp.Timeout = 10000;
+
+                    if (_environment.IsDevelopment())
+                        smtp.ServerCertificateValidationCallback = (_, _, _, _) => true;
+
+                    await smtp.ConnectAsync(host, port, socketOptions);
+                    await smtp.AuthenticateAsync(username, password);
+                    await smtp.SendAsync(email);
+                    await smtp.DisconnectAsync(true);
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    lastException = ex;
+                }
             }
 
-            await smtp.ConnectAsync(
-                host,
-                port,
-                SecureSocketOptions.StartTls);
-            await smtp.AuthenticateAsync(
-                username,
-                password);
-            await smtp.SendAsync(email);
-            await smtp.DisconnectAsync(true);
+            throw new InvalidOperationException(
+                $"Failed to send email after trying all ports. Last error: {lastException?.Message}",
+                lastException);
         }
     }
 }
