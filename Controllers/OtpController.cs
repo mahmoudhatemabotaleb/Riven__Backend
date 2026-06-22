@@ -19,17 +19,20 @@ namespace RivenBackend.Controllers
         private readonly IEmailService _emailService;
         private readonly IConfiguration _config;
         private readonly IOtpRateLimitService _rateLimit;
+        private readonly ILogger<OtpController> _logger;
 
         public OtpController(
             AppDbContext context,
             IEmailService emailService,
             IConfiguration config,
-            IOtpRateLimitService rateLimit)
+            IOtpRateLimitService rateLimit,
+            ILogger<OtpController> logger)
         {
             _context = context;
             _emailService = emailService;
             _config = config;
             _rateLimit = rateLimit;
+            _logger = logger;
         }
 
         // POST: api/otp/forgot-password
@@ -54,7 +57,16 @@ namespace RivenBackend.Controllers
                     CreatedAt = DateTime.UtcNow
                 });
                 await _context.SaveChangesAsync();
-                await _emailService.SendOtpEmailAsync(request.Email, otp);
+
+                try
+                {
+                    await _emailService.SendOtpEmailAsync(request.Email, otp);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Failed to send OTP email to {Email}", request.Email);
+                    return StatusCode(500, ApiResponse.Fail($"Failed to send OTP email: {ex.Message}"));
+                }
             }
 
             return Ok(ApiResponse.Ok("If this email exists, an OTP will be sent."));
@@ -89,11 +101,19 @@ namespace RivenBackend.Controllers
 
                 if (!string.IsNullOrWhiteSpace(accountSid) && !string.IsNullOrWhiteSpace(authToken))
                 {
-                    TwilioClient.Init(accountSid, authToken);
-                    await MessageResource.CreateAsync(
-                        to: new PhoneNumber(request.PhoneNumber),
-                        from: new PhoneNumber(fromNumber),
-                        body: $"Your Riven OTP code is: {otp}. Valid for 10 minutes.");
+                    try
+                    {
+                        TwilioClient.Init(accountSid, authToken);
+                        await MessageResource.CreateAsync(
+                            to: new PhoneNumber(request.PhoneNumber),
+                            from: new PhoneNumber(fromNumber),
+                            body: $"Your Riven OTP code is: {otp}. Valid for 10 minutes.");
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "Failed to send OTP SMS to {Phone}", request.PhoneNumber);
+                        return StatusCode(500, ApiResponse.Fail($"Failed to send OTP SMS: {ex.Message}"));
+                    }
                 }
             }
 
