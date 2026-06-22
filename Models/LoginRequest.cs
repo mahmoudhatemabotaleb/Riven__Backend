@@ -14,6 +14,14 @@
         public string PhoneNumber { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
     }
+    public class HospitalRegisterRequest
+    {
+        public string HospitalName { get; set; } = string.Empty;
+        public string Address { get; set; } = string.Empty;
+        public string CityStateZip { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+    }
     public class ForgotPasswordSmsRequest
     {
         public string PhoneNumber { get; set; } = string.Empty;

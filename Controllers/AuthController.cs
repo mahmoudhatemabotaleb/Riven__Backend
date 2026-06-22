@@ -150,5 +150,67 @@ namespace RivenBackend.Controllers
                 signingCredentials: creds);
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+        // POST: api/auth/register-hospital
+        [AllowAnonymous]
+        [HttpPost("register-hospital")]
+        public async Task<IActionResult> RegisterHospital(HospitalRegisterRequest request)
+        {
+            if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.Password))
+                return BadRequest(ApiResponse.Fail("Email and password are required"));
+
+            if (!PasswordValidator.IsValid(request.Password, out var passwordError))
+                return BadRequest(ApiResponse.Fail(passwordError));
+
+            var exists = await _context.Users.AnyAsync(u => u.Email == request.Email);
+            if (exists)
+                return BadRequest(ApiResponse.Fail("Email already exists"));
+
+            // Create the hospital
+            var hospital = new Hospital
+            {
+                Name = request.HospitalName,
+                Address = request.Address + ", " + request.CityStateZip,
+            };
+            _context.Hospitals.Add(hospital);
+            await _context.SaveChangesAsync();
+
+            // Create admin user for this hospital
+            var adminRole = await _context.Roles.FirstOrDefaultAsync(r => r.RoleName == "Admin");
+            if (adminRole == null)
+                return BadRequest(ApiResponse.Fail("Admin role not found. Contact administrator."));
+
+            var user = new User
+            {
+                FirstName = request.HospitalName,
+                LastName = "",
+                Email = request.Email,
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
+                Status = "Active",
+                AccountCreationDate = DateTime.UtcNow,
+                RoleId = adminRole.RoleId,
+                HospitalId = hospital.HospitalId
+            };
+
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+
+            await _context.Entry(user).Reference(u => u.Role).LoadAsync();
+            await _context.Entry(user).Reference(u => u.Hospital).LoadAsync();
+
+            var token = GenerateToken(user);
+
+            return Ok(ApiResponse<object>.Ok(new
+            {
+                token,
+                user = new
+                {
+                    user.UserId,
+                    user.Email,
+                    HospitalName = hospital.Name,
+                    user.Status,
+                    RoleName = user.Role?.RoleName ?? "Admin",
+                }
+            }, "Hospital registered successfully"));
+        }
     }
 }
