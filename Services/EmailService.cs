@@ -19,7 +19,7 @@ namespace RivenBackend.Services
 
         public async Task SendOtpEmailAsync(string toEmail, string otp)
         {
-            var apiKey = _config["SendGrid__ApiKey"]
+            var apiKey = _config["SENDGRID_API_KEY"]
                 ?? throw new InvalidOperationException("SendGrid__ApiKey is not configured.");
 
             var fromEmail = _config["Email__Username"]
