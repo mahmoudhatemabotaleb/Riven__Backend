@@ -1,6 +1,5 @@
-﻿using MailKit.Net.Smtp;
-using MailKit.Security;
-using MimeKit;
+﻿using SendGrid;
+using SendGrid.Helpers.Mail;
 
 namespace RivenBackend.Services
 {
@@ -12,30 +11,27 @@ namespace RivenBackend.Services
     public class EmailService : IEmailService
     {
         private readonly IConfiguration _config;
-        private readonly IHostEnvironment _environment;
 
-        public EmailService(IConfiguration config, IHostEnvironment environment)
+        public EmailService(IConfiguration config)
         {
             _config = config;
-            _environment = environment;
         }
 
         public async Task SendOtpEmailAsync(string toEmail, string otp)
         {
-            var username = _config["Email:Username"]
-                ?? throw new InvalidOperationException("Email:Username is not configured.");
-            var host = _config["Email:Host"]
-                ?? throw new InvalidOperationException("Email:Host is not configured.");
-            var password = _config["Email:Password"]
-                ?? throw new InvalidOperationException("Email:Password is not configured.");
+            var apiKey = _config["SendGrid__ApiKey"]
+                ?? throw new InvalidOperationException("SendGrid__ApiKey is not configured.");
 
-            var email = new MimeMessage();
-            email.From.Add(MailboxAddress.Parse(username));
-            email.To.Add(MailboxAddress.Parse(toEmail));
-            email.Subject = "Riven - Your OTP Code";
-            email.Body = new TextPart("html")
+            var fromEmail = _config["Email__Username"]
+                ?? throw new InvalidOperationException("Email__Username is not configured.");
+
+            var client = new SendGridClient(apiKey);
+
+            var msg = new SendGridMessage
             {
-                Text = $@"
+                From = new EmailAddress(fromEmail, "Riven Stroke System"),
+                Subject = "Riven - Your OTP Code",
+                HtmlContent = $@"
                 <div style='font-family: Arial, sans-serif; max-width: 400px; margin: auto;'>
                     <h2 style='color: #008080;'>Riven Stroke System</h2>
                     <p>Your OTP verification code is:</p>
@@ -45,38 +41,15 @@ namespace RivenBackend.Services
                 </div>"
             };
 
-            var portsToTry = new[] { 587, 2525, 465 };
-            Exception? lastException = null;
+            msg.AddTo(new EmailAddress(toEmail));
 
-            foreach (var port in portsToTry)
+            var response = await client.SendEmailAsync(msg);
+
+            if (!response.IsSuccessStatusCode)
             {
-                try
-                {
-                    var socketOptions = port == 465
-                        ? SecureSocketOptions.SslOnConnect
-                        : SecureSocketOptions.StartTls;
-
-                    using var smtp = new SmtpClient();
-                    smtp.Timeout = 10000;
-
-                    if (_environment.IsDevelopment())
-                        smtp.ServerCertificateValidationCallback = (_, _, _, _) => true;
-
-                    await smtp.ConnectAsync(host, port, socketOptions);
-                    await smtp.AuthenticateAsync(username, password);
-                    await smtp.SendAsync(email);
-                    await smtp.DisconnectAsync(true);
-                    return;
-                }
-                catch (Exception ex)
-                {
-                    lastException = ex;
-                }
+                var body = await response.Body.ReadAsStringAsync();
+                throw new InvalidOperationException($"SendGrid error: {body}");
             }
-
-            throw new InvalidOperationException(
-                $"Failed to send email after trying all ports. Last error: {lastException?.Message}",
-                lastException);
         }
     }
 }
