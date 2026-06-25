@@ -5,12 +5,16 @@
         public int CaseId { get; set; }
         public int PatientId { get; set; }
         public string? PatientName { get; set; }
+        public int? PatientAge { get; set; }
+        public string? PatientGender { get; set; }
         public int UserId { get; set; }
         public int AmbulanceId { get; set; }
         public int HospitalId { get; set; }
         public string? HospitalName { get; set; }
         public string Status { get; set; } = string.Empty;
         public string Severity { get; set; } = string.Empty;
+        public string? AiPrediction { get; set; }
+        public string? ParamedicName { get; set; }
         public DateTime OnsetTime { get; set; }
         public DateTime CaseDate { get; set; }
         public string Location { get; set; } = string.Empty;
@@ -69,7 +73,7 @@
         public int EnRouteCases { get; set; }
         public int ArrivedCases { get; set; }
         public int CompletedCases { get; set; }
-        public int HandoverCases { get; set; }  // ← ADDED
+        public int HandoverCases { get; set; }
         public int TodayCases { get; set; }
         public double AverageOnsetToArrivalMinutes { get; set; }
         public int UnreadNotifications { get; set; }

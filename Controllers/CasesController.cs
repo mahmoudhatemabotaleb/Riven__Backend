@@ -37,12 +37,44 @@ namespace RivenBackend.Controllers
             _notificationService = notificationService;
         }
 
-        // GET: api/cases?page=1&pageSize=20
+        // GET: api/cases?search=&severity=&status=&dateFrom=&dateTo=&page=1&pageSize=20
         [HttpGet]
         [Authorize(Roles = "Admin,Doctor,Paramedic")]
-        public async Task<ActionResult<object>> GetAll([FromQuery] int? page, [FromQuery] int? pageSize)
+        public async Task<ActionResult<object>> GetAll(
+            [FromQuery] string? search,
+            [FromQuery] string? severity,
+            [FromQuery] string? status,
+            [FromQuery] DateTime? dateFrom,
+            [FromQuery] DateTime? dateTo,
+            [FromQuery] int? page,
+            [FromQuery] int? pageSize)
         {
-            var query = _caseAccess.FilterAccessibleCases(_context.Cases);
+            IQueryable<Case> query = _caseAccess.FilterAccessibleCases(_context.Cases)
+                .Include(c => c.Patient)
+                .Include(c => c.Hospital)
+                .Include(c => c.User)
+                .Include(c => c.AiReport);
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                var s = search.Trim().ToLower();
+                query = query.Where(c =>
+                    c.CaseId.ToString().Contains(s) ||
+                    (c.User.FirstName + " " + c.User.LastName).ToLower().Contains(s) ||
+                    (c.AiReport != null && c.AiReport.StrokeType != null && c.AiReport.StrokeType.ToLower().Contains(s)));
+            }
+
+            if (!string.IsNullOrWhiteSpace(severity))
+                query = query.Where(c => c.Severity.ToLower() == severity.ToLower());
+
+            if (!string.IsNullOrWhiteSpace(status))
+                query = query.Where(c => c.Status.ToLower() == status.ToLower());
+
+            if (dateFrom.HasValue)
+                query = query.Where(c => c.CaseDate >= dateFrom.Value.Date);
+
+            if (dateTo.HasValue)
+                query = query.Where(c => c.CaseDate < dateTo.Value.Date.AddDays(1));
 
             if (page.HasValue && pageSize.HasValue && pageSize.Value > 0)
             {
@@ -63,7 +95,10 @@ namespace RivenBackend.Controllers
                 });
             }
 
-            return await query.Select(CaseMapper.ToDtoExpression).ToListAsync();
+            return await query
+                .OrderByDescending(c => c.CaseDate)
+                .Select(CaseMapper.ToDtoExpression)
+                .ToListAsync();
         }
 
         // GET: api/cases/{id}/detail
@@ -301,9 +336,9 @@ namespace RivenBackend.Controllers
 
                 if (case_ == null) return NotFound();
                 await _caseAccess.EnsureCanAccessCaseAsync(id);
-                _workflow.EnsureValidTransition(case_.Status, CaseStatuses.Handover); // ← FIXED
+                _workflow.EnsureValidTransition(case_.Status, CaseStatuses.Handover);
 
-                case_.Status = CaseStatuses.Handover;               // ← FIXED
+                case_.Status = CaseStatuses.Handover;
                 case_.HandoverTime = DateTime.UtcNow;
                 case_.ReceivingPhysician = dto.ReceivingPhysician;
                 case_.PatientConditionOnArrival = dto.PatientConditionOnArrival;
