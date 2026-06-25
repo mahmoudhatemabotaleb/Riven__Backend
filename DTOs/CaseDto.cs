@@ -1,4 +1,4 @@
-namespace RivenBackend.DTOs
+﻿namespace RivenBackend.DTOs
 {
     public class CaseDto
     {
@@ -69,6 +69,7 @@ namespace RivenBackend.DTOs
         public int EnRouteCases { get; set; }
         public int ArrivedCases { get; set; }
         public int CompletedCases { get; set; }
+        public int HandoverCases { get; set; }  // ← ADDED
         public int TodayCases { get; set; }
         public double AverageOnsetToArrivalMinutes { get; set; }
         public int UnreadNotifications { get; set; }

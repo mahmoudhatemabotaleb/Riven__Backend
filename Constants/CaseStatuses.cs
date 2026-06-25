@@ -7,5 +7,6 @@ namespace RivenBackend.Constants
         public const string EnRoute = "EnRoute";
         public const string Arrived = "Arrived";
         public const string Completed = "Completed";
+        public const string Handover = "Handover";
     }
 }
