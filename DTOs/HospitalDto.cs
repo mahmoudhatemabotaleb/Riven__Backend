@@ -1,5 +1,6 @@
 ﻿namespace RivenBackend.DTOs
 {
+    // ── Hospital DTOs ──────────────────────────────────────────
     public class HospitalDto
     {
         public int HospitalId { get; set; }
@@ -52,5 +53,17 @@
         public string ContactNumber { get; set; } = string.Empty;
         public int AvailableStrokeBeds { get; set; }
         public string? ProfilePicture { get; set; }
+    }
+
+    // ── Account Settings DTOs ──────────────────────────────────
+    public class AccountSettingsDto
+    {
+        public string Email { get; set; } = string.Empty;
+    }
+
+    public class UpdateAccountSettingsDto
+    {
+        public string Email { get; set; } = string.Empty;
+        public string? Password { get; set; }
     }
 }
