@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RivenBackend.Constants;
@@ -301,16 +301,16 @@ namespace RivenBackend.Controllers
 
                 if (case_ == null) return NotFound();
                 await _caseAccess.EnsureCanAccessCaseAsync(id);
-                _workflow.EnsureValidTransition(case_.Status, CaseStatuses.Completed);
+                _workflow.EnsureValidTransition(case_.Status, CaseStatuses.Handover); // ← FIXED
 
-                case_.Status = CaseStatuses.Completed;
-            case_.HandoverTime = DateTime.UtcNow;
-            case_.ReceivingPhysician = dto.ReceivingPhysician;
-            case_.PatientConditionOnArrival = dto.PatientConditionOnArrival;
-            case_.HandoverNotes = dto.HandoverNotes;
-            await _context.SaveChangesAsync();
+                case_.Status = CaseStatuses.Handover;               // ← FIXED
+                case_.HandoverTime = DateTime.UtcNow;
+                case_.ReceivingPhysician = dto.ReceivingPhysician;
+                case_.PatientConditionOnArrival = dto.PatientConditionOnArrival;
+                case_.HandoverNotes = dto.HandoverNotes;
+                await _context.SaveChangesAsync();
 
-            return Ok(CaseMapper.ToDto(case_));
+                return Ok(CaseMapper.ToDto(case_));
             }
             catch (UnauthorizedAccessException)
             {
@@ -379,9 +379,10 @@ namespace RivenBackend.Controllers
                 todayCases = cases.Count(c => c.CaseDate.Date == today),
                 weeklyCases = cases.Count(c => c.CaseDate >= thisWeek),
                 monthlyCases = cases.Count(c => c.CaseDate >= thisMonth),
-                activeCases = cases.Count(c => c.Status == "Active"),
-                completedCases = cases.Count(c => c.Status == "Completed"),
-                pendingCases = cases.Count(c => c.Status == "Pending"),
+                activeCases = cases.Count(c => c.Status == CaseStatuses.Active),
+                completedCases = cases.Count(c => c.Status == CaseStatuses.Completed),
+                handoverCases = cases.Count(c => c.Status == CaseStatuses.Handover),
+                pendingCases = cases.Count(c => c.Status == CaseStatuses.Pending),
                 severityBreakdown = new
                 {
                     critical = cases.Count(c => c.Severity == "Critical" || c.Severity == "High"),
