@@ -233,6 +233,17 @@ namespace RivenBackend.Controllers
         }
 
         // ══════════════════════════════════════════════════════════════
+        // Helper — حساب الـ response time لـ case واحدة
+        // بيستخدم ArrivedTime لو موجود، وإلا CaseDate كـ fallback
+        // ══════════════════════════════════════════════════════════════
+        private static double GetResponseMinutes(Case c)
+        {
+            var arrivalTime = c.ArrivedTime ?? c.CaseDate;
+            var diff = (arrivalTime - c.OnsetTime).TotalMinutes;
+            return diff > 0 ? diff : 0;
+        }
+
+        // ══════════════════════════════════════════════════════════════
         // GET: api/users/{id}/stats?period=today|week|month
         // ══════════════════════════════════════════════════════════════
         [HttpGet("{id}/stats")]
@@ -276,7 +287,7 @@ namespace RivenBackend.Controllers
                 .Where(c => c.UserId == id && c.CaseDate >= previousStart && c.CaseDate < previousEnd)
                 .ToListAsync();
 
-            // Total Cases + Trend
+            // ── Total Cases + Trend ──
             int totalCases = currentCases.Count;
             int previousTotal = previousCases.Count;
             string casesTrend;
@@ -288,15 +299,14 @@ namespace RivenBackend.Controllers
                 casesTrend = $"{Math.Abs(Math.Round(changePct))}% {trendLabel}";
             }
 
-            // Avg Response Time : OnsetTime → ArrivedTime
-            var casesWithArrival = currentCases.Where(c => c.ArrivedTime.HasValue).ToList();
-            double avgResponseMinutes = casesWithArrival.Count > 0
-                ? casesWithArrival.Average(c => (c.ArrivedTime!.Value - c.OnsetTime).TotalMinutes)
+            // ── Avg Response Time ──
+            // يستخدم ArrivedTime لو موجود، وإلا CaseDate كـ fallback
+            double avgResponseMinutes = currentCases.Count > 0
+                ? currentCases.Average(c => GetResponseMinutes(c))
                 : 0;
 
-            var prevCasesWithArrival = previousCases.Where(c => c.ArrivedTime.HasValue).ToList();
-            double prevAvgResponse = prevCasesWithArrival.Count > 0
-                ? prevCasesWithArrival.Average(c => (c.ArrivedTime!.Value - c.OnsetTime).TotalMinutes)
+            double prevAvgResponse = previousCases.Count > 0
+                ? previousCases.Average(c => GetResponseMinutes(c))
                 : 0;
 
             string responseTrend;
@@ -310,10 +320,10 @@ namespace RivenBackend.Controllers
                     : $"{Math.Round(Math.Abs(diff))}m slower";
             }
 
-            // Handovers = cases لها HandoverTime
+            // ── Handovers = cases لها HandoverTime ──
             int handovers = currentCases.Count(c => c.HandoverTime.HasValue);
 
-            // Completion Rate = Status == "Completed"
+            // ── Completion Rate = Status == "Completed" ──
             int completed = currentCases.Count(c => c.Status == "Completed");
             double completionPct = totalCases > 0
                 ? Math.Round((double)completed / totalCases * 100)
@@ -361,9 +371,8 @@ namespace RivenBackend.Controllers
                         var end = now.AddDays(-w * 7);
                         var wCases = cases.Where(c => c.CaseDate >= start && c.CaseDate < end).ToList();
                         casesData.Add(wCases.Count);
-                        var withArr = wCases.Where(c => c.ArrivedTime.HasValue).ToList();
-                        responseData.Add(withArr.Count > 0
-                            ? Math.Round(withArr.Average(c => (c.ArrivedTime!.Value - c.OnsetTime).TotalMinutes), 1)
+                        responseData.Add(wCases.Count > 0
+                            ? Math.Round(wCases.Average(c => GetResponseMinutes(c)), 1)
                             : 0);
                     }
                     break;
@@ -378,9 +387,8 @@ namespace RivenBackend.Controllers
                         labels.Add(monthDate.ToString("MMM"));
                         var mCases = cases.Where(c => c.CaseDate >= monthStart && c.CaseDate < monthEnd).ToList();
                         casesData.Add(mCases.Count);
-                        var withArr = mCases.Where(c => c.ArrivedTime.HasValue).ToList();
-                        responseData.Add(withArr.Count > 0
-                            ? Math.Round(withArr.Average(c => (c.ArrivedTime!.Value - c.OnsetTime).TotalMinutes), 1)
+                        responseData.Add(mCases.Count > 0
+                            ? Math.Round(mCases.Average(c => GetResponseMinutes(c)), 1)
                             : 0);
                     }
                     break;
@@ -392,9 +400,8 @@ namespace RivenBackend.Controllers
                         var day = now.Date.AddDays(-d);
                         var dCases = cases.Where(c => c.CaseDate.Date == day).ToList();
                         casesData.Add(dCases.Count);
-                        var withArr = dCases.Where(c => c.ArrivedTime.HasValue).ToList();
-                        responseData.Add(withArr.Count > 0
-                            ? Math.Round(withArr.Average(c => (c.ArrivedTime!.Value - c.OnsetTime).TotalMinutes), 1)
+                        responseData.Add(dCases.Count > 0
+                            ? Math.Round(dCases.Average(c => GetResponseMinutes(c)), 1)
                             : 0);
                     }
                     break;
@@ -409,6 +416,7 @@ namespace RivenBackend.Controllers
 
         // ══════════════════════════════════════════════════════════════
         // GET: api/users/{id}/case-types
+        // بيرجع breakdown حسب الـ Severity للـ donut chart
         // ══════════════════════════════════════════════════════════════
         [HttpGet("{id}/case-types")]
         [Authorize(Roles = "Admin,Doctor")]
