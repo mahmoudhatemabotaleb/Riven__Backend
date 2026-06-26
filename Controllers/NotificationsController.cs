@@ -27,9 +27,9 @@ namespace RivenBackend.Controllers
         {
             var notifications = await _context.Notifications
                 .Include(n => n.Case)
-                    .ThenInclude(c => c.Patient)
+                    .ThenInclude(c => c!.Patient)
                 .Include(n => n.Case)
-                    .ThenInclude(c => c.AiReport)
+                    .ThenInclude(c => c!.AiReport)
                 .OrderByDescending(n => n.SentTime)
                 .ToListAsync();
 
@@ -52,7 +52,6 @@ namespace RivenBackend.Controllers
         }
 
         // GET: api/notifications/my
-        // Get notifications for logged in user's hospital
         [HttpGet("my")]
         [Authorize(Roles = "Admin,Doctor,Paramedic")]
         public async Task<ActionResult<IEnumerable<NotificationDto>>> GetMyNotifications()
@@ -63,9 +62,9 @@ namespace RivenBackend.Controllers
 
             var notifications = await _context.Notifications
                 .Include(n => n.Case)
-                    .ThenInclude(c => c.Patient)
+                    .ThenInclude(c => c!.Patient)
                 .Include(n => n.Case)
-                    .ThenInclude(c => c.AiReport)
+                    .ThenInclude(c => c!.AiReport)
                 .Where(n => n.HospitalId == user.HospitalId)
                 .OrderByDescending(n => n.SentTime)
                 .ToListAsync();
@@ -110,9 +109,9 @@ namespace RivenBackend.Controllers
         {
             var n = await _context.Notifications
                 .Include(n => n.Case)
-                    .ThenInclude(c => c.Patient)
+                    .ThenInclude(c => c!.Patient)
                 .Include(n => n.Case)
-                    .ThenInclude(c => c.AiReport)
+                    .ThenInclude(c => c!.AiReport)
                 .FirstOrDefaultAsync(n => n.NotificationId == id);
 
             if (n == null) return NotFound();
@@ -136,7 +135,6 @@ namespace RivenBackend.Controllers
         }
 
         // PATCH: api/notifications/{id}/status
-        // Accept or reject a case notification
         [HttpPatch("{id}/status")]
         [Authorize(Roles = "Admin,Doctor,Paramedic")]
         public async Task<IActionResult> UpdateStatus(int id, [FromBody] UpdateNotificationStatusDto dto)
@@ -191,29 +189,47 @@ namespace RivenBackend.Controllers
             await _context.SaveChangesAsync();
             return NoContent();
         }
+
         // POST: api/notifications/broadcast
         [HttpPost("broadcast")]
         [Authorize(Roles = "Admin,Doctor")]
         public async Task<IActionResult> Broadcast([FromBody] BroadcastDto dto)
         {
-            var users = await _context.Users
-                .Where(u => u.HospitalId == dto.HospitalId)
-                .ToListAsync();
+            List<User> users;
+
+            if (dto.TargetUserIds != null && dto.TargetUserIds.Any())
+            {
+                users = await _context.Users
+                    .Where(u => dto.TargetUserIds.Contains(u.UserId))
+                    .ToListAsync();
+            }
+            else
+            {
+                users = await _context.Users
+                    .Where(u => u.HospitalId == dto.HospitalId)
+                    .ToListAsync();
+            }
+
+            var message = $"[{dto.EmergencyType.ToUpper()}]" +
+                          (!string.IsNullOrEmpty(dto.SeverityLevel) ? $" ({dto.SeverityLevel})" : "") +
+                          $" Location: {dto.Location}" +
+                          (!string.IsNullOrEmpty(dto.Notes) ? $". Notes: {dto.Notes}" : "");
 
             var notifications = users.Select(u => new Notification
             {
                 HospitalId = dto.HospitalId,
-                CaseId = dto.CaseId,
+                CaseId = null,
                 UserId = u.UserId,
-                SentTime = DateTime.Now,
+                SentTime = DateTime.UtcNow,
                 Status = "Pending",
-                Message = dto.Message,
-                Type = dto.Type
+                Message = message,
+                Type = dto.SeverityLevel
             }).ToList();
 
             _context.Notifications.AddRange(notifications);
             await _context.SaveChangesAsync();
-            return Ok($"{notifications.Count} notifications sent");
+
+            return Ok(new { message = $"{notifications.Count} notifications sent" });
         }
     }
 }
