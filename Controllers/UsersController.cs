@@ -22,7 +22,7 @@ namespace RivenBackend.Controllers
 
         // GET: api/users
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Doctor")]
         public async Task<ActionResult<IEnumerable<UserDto>>> GetAll()
         {
             return await _context.Users
@@ -48,7 +48,7 @@ namespace RivenBackend.Controllers
 
         // GET: api/users/{id}
         [HttpGet("{id}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Doctor")]
         public async Task<ActionResult<UserDto>> GetById(int id)
         {
             var u = await _context.Users
@@ -75,7 +75,6 @@ namespace RivenBackend.Controllers
         }
 
         // GET: api/users/me
-        // Get currently logged in user profile
         [HttpGet("me")]
         public async Task<ActionResult<UserDto>> GetMe()
         {
@@ -104,7 +103,6 @@ namespace RivenBackend.Controllers
         }
 
         // PATCH: api/users/me/profile
-        // Update own profile
         [HttpPatch("me/profile")]
         public async Task<IActionResult> UpdateMyProfile([FromBody] UpdateProfileDto dto)
         {
@@ -120,7 +118,6 @@ namespace RivenBackend.Controllers
         }
 
         // PATCH: api/users/me/password
-        // Change own password
         [HttpPatch("me/password")]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto dto)
         {
@@ -135,7 +132,6 @@ namespace RivenBackend.Controllers
         }
 
         // GET: api/users/hospital/{hospitalId}
-        // Get all users in a hospital (paramedic team)
         [HttpGet("hospital/{hospitalId}")]
         [Authorize(Roles = "Admin,Doctor")]
         public async Task<ActionResult<IEnumerable<UserDto>>> GetByHospital(int hospitalId)
@@ -164,7 +160,7 @@ namespace RivenBackend.Controllers
 
         // POST: api/users
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Doctor")]
         public async Task<ActionResult<UserDto>> Create(CreateUserDto dto)
         {
             var u = new User
@@ -200,7 +196,7 @@ namespace RivenBackend.Controllers
 
         // PUT: api/users/{id}
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Doctor")]
         public async Task<IActionResult> Update(int id, CreateUserDto dto)
         {
             var u = await _context.Users.FindAsync(id);
@@ -219,7 +215,7 @@ namespace RivenBackend.Controllers
 
         // DELETE: api/users/{id}
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Doctor")]
         public async Task<IActionResult> Delete(int id)
         {
             var u = await _context.Users.FindAsync(id);
