@@ -7,10 +7,10 @@ namespace RivenBackend.Models
         public int NotificationId { get; set; }
         [Required]
         public int HospitalId { get; set; }
-        public int? CaseId { get; set; }        // ← nullable now
+        public int? CaseId { get; set; }
         public int? UserId { get; set; }
         [Required]
-        public DateTime SentTime { get; set; } = DateTime.Now;
+        public DateTime SentTime { get; set; } = DateTime.UtcNow;  // ← fixed
         [Required]
         [StringLength(20)]
         public string Status { get; set; } = "Pending";
@@ -21,6 +21,6 @@ namespace RivenBackend.Models
         public bool IsRead { get; set; } = false;
         // Navigation properties
         public Hospital Hospital { get; set; } = null!;
-        public Case? Case { get; set; }         // ← nullable now
+        public Case? Case { get; set; }
     }
 }

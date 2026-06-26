@@ -4,7 +4,7 @@
     {
         public int NotificationId { get; set; }
         public int HospitalId { get; set; }
-        public int? CaseId { get; set; }        // ← nullable
+        public int? CaseId { get; set; }
         public int? UserId { get; set; }
         public DateTime SentTime { get; set; }
         public string Status { get; set; } = string.Empty;
@@ -20,9 +20,9 @@
     public class CreateNotificationDto
     {
         public int HospitalId { get; set; }
-        public int? CaseId { get; set; }        // ← nullable
+        public int? CaseId { get; set; }
         public int? UserId { get; set; }
-        public DateTime SentTime { get; set; } = DateTime.Now;
+        public DateTime SentTime { get; set; } = DateTime.UtcNow;  // ← fixed
         public string Status { get; set; } = "Pending";
         public string? Message { get; set; }
         public string? Type { get; set; }
@@ -37,10 +37,10 @@
     public class BroadcastDto
     {
         public int HospitalId { get; set; }
-        public string EmergencyType { get; set; } = string.Empty;   // ← new
-        public string SeverityLevel { get; set; } = string.Empty;   // ← new
-        public string Location { get; set; } = string.Empty;        // ← new
-        public string? Notes { get; set; }                          // ← new
-        public List<int>? TargetUserIds { get; set; }               // ← new
+        public string EmergencyType { get; set; } = string.Empty;
+        public string SeverityLevel { get; set; } = string.Empty;
+        public string Location { get; set; } = string.Empty;
+        public string? Notes { get; set; }
+        public List<int>? TargetUserIds { get; set; }
     }
 }
