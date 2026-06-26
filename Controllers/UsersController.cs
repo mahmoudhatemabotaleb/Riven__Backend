@@ -178,7 +178,7 @@ namespace RivenBackend.Controllers
                 HospitalId = dto.HospitalId,
                 AmbulanceId = dto.AmbulanceId,
                 Status = dto.Status,
-                AccountCreationDate = DateTime.Now,
+                AccountCreationDate = DateTime.UtcNow,  // ← التعديل هنا
                 ProfilePicture = dto.ProfilePicture
             };
             _context.Users.Add(u);
