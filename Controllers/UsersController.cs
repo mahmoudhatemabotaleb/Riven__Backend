@@ -178,7 +178,7 @@ namespace RivenBackend.Controllers
                 HospitalId = dto.HospitalId,
                 AmbulanceId = dto.AmbulanceId,
                 Status = dto.Status,
-                AccountCreationDate = DateTime.UtcNow,  // ← التعديل هنا
+                AccountCreationDate = DateTime.UtcNow,
                 ProfilePicture = dto.ProfilePicture
             };
             _context.Users.Add(u);
@@ -230,6 +230,211 @@ namespace RivenBackend.Controllers
             _context.Users.Remove(u);
             await _context.SaveChangesAsync();
             return NoContent();
+        }
+
+        // ══════════════════════════════════════════════════════════════
+        // GET: api/users/{id}/stats?period=today|week|month
+        // ══════════════════════════════════════════════════════════════
+        [HttpGet("{id}/stats")]
+        [Authorize(Roles = "Admin,Doctor")]
+        public async Task<IActionResult> GetStats(int id, [FromQuery] string period = "today")
+        {
+            var userExists = await _context.Users.AnyAsync(u => u.UserId == id);
+            if (!userExists) return NotFound();
+
+            var now = DateTime.UtcNow;
+            DateTime currentStart, previousStart, previousEnd;
+            string trendLabel;
+
+            switch (period)
+            {
+                case "week":
+                    currentStart = now.AddDays(-7);
+                    previousStart = now.AddDays(-14);
+                    previousEnd = now.AddDays(-7);
+                    trendLabel = "vs last week";
+                    break;
+                case "month":
+                    currentStart = now.AddMonths(-1);
+                    previousStart = now.AddMonths(-2);
+                    previousEnd = now.AddMonths(-1);
+                    trendLabel = "vs last month";
+                    break;
+                default: // today
+                    currentStart = now.Date;
+                    previousStart = now.Date.AddDays(-1);
+                    previousEnd = now.Date;
+                    trendLabel = "vs last period";
+                    break;
+            }
+
+            var currentCases = await _context.Cases
+                .Where(c => c.UserId == id && c.CaseDate >= currentStart)
+                .ToListAsync();
+
+            var previousCases = await _context.Cases
+                .Where(c => c.UserId == id && c.CaseDate >= previousStart && c.CaseDate < previousEnd)
+                .ToListAsync();
+
+            // Total Cases + Trend
+            int totalCases = currentCases.Count;
+            int previousTotal = previousCases.Count;
+            string casesTrend;
+            if (previousTotal == 0)
+                casesTrend = totalCases > 0 ? $"New cases {trendLabel}" : $"No cases {trendLabel}";
+            else
+            {
+                double changePct = ((double)(totalCases - previousTotal) / previousTotal) * 100;
+                casesTrend = $"{Math.Abs(Math.Round(changePct))}% {trendLabel}";
+            }
+
+            // Avg Response Time : OnsetTime → ArrivedTime
+            var casesWithArrival = currentCases.Where(c => c.ArrivedTime.HasValue).ToList();
+            double avgResponseMinutes = casesWithArrival.Count > 0
+                ? casesWithArrival.Average(c => (c.ArrivedTime!.Value - c.OnsetTime).TotalMinutes)
+                : 0;
+
+            var prevCasesWithArrival = previousCases.Where(c => c.ArrivedTime.HasValue).ToList();
+            double prevAvgResponse = prevCasesWithArrival.Count > 0
+                ? prevCasesWithArrival.Average(c => (c.ArrivedTime!.Value - c.OnsetTime).TotalMinutes)
+                : 0;
+
+            string responseTrend;
+            if (prevAvgResponse == 0)
+                responseTrend = "—";
+            else
+            {
+                double diff = prevAvgResponse - avgResponseMinutes;
+                responseTrend = diff >= 0
+                    ? $"{Math.Round(Math.Abs(diff))}m faster"
+                    : $"{Math.Round(Math.Abs(diff))}m slower";
+            }
+
+            // Handovers = cases لها HandoverTime
+            int handovers = currentCases.Count(c => c.HandoverTime.HasValue);
+
+            // Completion Rate = Status == "Completed"
+            int completed = currentCases.Count(c => c.Status == "Completed");
+            double completionPct = totalCases > 0
+                ? Math.Round((double)completed / totalCases * 100)
+                : 0;
+
+            return Ok(new
+            {
+                totalCases,
+                casesTrend,
+                avgResponse = avgResponseMinutes > 0 ? $"{Math.Round(avgResponseMinutes)}m" : "—",
+                responseTrend,
+                handovers,
+                handoverSub = "Completed transfers",
+                completionRate = $"{completionPct}%",
+                completionSub = "Cases assessments"
+            });
+        }
+
+        // ══════════════════════════════════════════════════════════════
+        // GET: api/users/{id}/charts?period=today|week|month
+        // ══════════════════════════════════════════════════════════════
+        [HttpGet("{id}/charts")]
+        [Authorize(Roles = "Admin,Doctor")]
+        public async Task<IActionResult> GetCharts(int id, [FromQuery] string period = "today")
+        {
+            var userExists = await _context.Users.AnyAsync(u => u.UserId == id);
+            if (!userExists) return NotFound();
+
+            var now = DateTime.UtcNow;
+            var cases = await _context.Cases
+                .Where(c => c.UserId == id)
+                .ToListAsync();
+
+            List<string> labels;
+            List<int> casesData = new();
+            List<double> responseData = new();
+
+            switch (period)
+            {
+                case "week":
+                    labels = new List<string> { "Week 1", "Week 2", "Week 3", "Week 4" };
+                    for (int w = 3; w >= 0; w--)
+                    {
+                        var start = now.AddDays(-(w + 1) * 7);
+                        var end = now.AddDays(-w * 7);
+                        var wCases = cases.Where(c => c.CaseDate >= start && c.CaseDate < end).ToList();
+                        casesData.Add(wCases.Count);
+                        var withArr = wCases.Where(c => c.ArrivedTime.HasValue).ToList();
+                        responseData.Add(withArr.Count > 0
+                            ? Math.Round(withArr.Average(c => (c.ArrivedTime!.Value - c.OnsetTime).TotalMinutes), 1)
+                            : 0);
+                    }
+                    break;
+
+                case "month":
+                    labels = new List<string>();
+                    for (int m = 5; m >= 0; m--)
+                    {
+                        var monthDate = now.AddMonths(-m);
+                        var monthStart = new DateTime(monthDate.Year, monthDate.Month, 1);
+                        var monthEnd = monthStart.AddMonths(1);
+                        labels.Add(monthDate.ToString("MMM"));
+                        var mCases = cases.Where(c => c.CaseDate >= monthStart && c.CaseDate < monthEnd).ToList();
+                        casesData.Add(mCases.Count);
+                        var withArr = mCases.Where(c => c.ArrivedTime.HasValue).ToList();
+                        responseData.Add(withArr.Count > 0
+                            ? Math.Round(withArr.Average(c => (c.ArrivedTime!.Value - c.OnsetTime).TotalMinutes), 1)
+                            : 0);
+                    }
+                    break;
+
+                default: // today — آخر 7 أيام
+                    labels = new List<string> { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
+                    for (int d = 6; d >= 0; d--)
+                    {
+                        var day = now.Date.AddDays(-d);
+                        var dCases = cases.Where(c => c.CaseDate.Date == day).ToList();
+                        casesData.Add(dCases.Count);
+                        var withArr = dCases.Where(c => c.ArrivedTime.HasValue).ToList();
+                        responseData.Add(withArr.Count > 0
+                            ? Math.Round(withArr.Average(c => (c.ArrivedTime!.Value - c.OnsetTime).TotalMinutes), 1)
+                            : 0);
+                    }
+                    break;
+            }
+
+            return Ok(new
+            {
+                casesOverTime = new { labels, data = casesData },
+                responseTimeTrend = new { labels, data = responseData }
+            });
+        }
+
+        // ══════════════════════════════════════════════════════════════
+        // GET: api/users/{id}/case-types
+        // ══════════════════════════════════════════════════════════════
+        [HttpGet("{id}/case-types")]
+        [Authorize(Roles = "Admin,Doctor")]
+        public async Task<IActionResult> GetCaseTypes(int id)
+        {
+            var userExists = await _context.Users.AnyAsync(u => u.UserId == id);
+            if (!userExists) return NotFound();
+
+            var cases = await _context.Cases
+                .Where(c => c.UserId == id)
+                .ToListAsync();
+
+            int total = cases.Count;
+            if (total == 0) return Ok(new List<object>());
+
+            var grouped = cases
+                .GroupBy(c => c.Severity)
+                .Select(g => new
+                {
+                    label = g.Key,
+                    pct = Math.Round((double)g.Count() / total * 100)
+                })
+                .OrderByDescending(x => x.pct)
+                .ToList();
+
+            return Ok(grouped);
         }
     }
 }
