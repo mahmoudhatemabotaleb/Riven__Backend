@@ -13,6 +13,7 @@
         public string RoleName { get; set; } = string.Empty;
         public int HospitalId { get; set; }
         public string HospitalName { get; set; } = string.Empty;
+        public int? AmbulanceId { get; set; }
         public DateTime AccountCreationDate { get; set; }
         public string? ProfilePicture { get; set; }
     }
@@ -26,6 +27,7 @@
         public string Password { get; set; } = string.Empty;
         public int RoleId { get; set; }
         public int HospitalId { get; set; }
+        public int? AmbulanceId { get; set; }
         public string Status { get; set; } = string.Empty;
         public string? ProfilePicture { get; set; }
     }

@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace RivenBackend.Models
 {
     public class User
@@ -32,6 +34,8 @@ namespace RivenBackend.Models
         [Required]
         public int HospitalId { get; set; }
 
+        public int? AmbulanceId { get; set; }
+
         [Required]
         [StringLength(20)]
         public string Status { get; set; } = string.Empty;
@@ -41,12 +45,15 @@ namespace RivenBackend.Models
 
         public string? ProfilePicture { get; set; }
 
-        // FullName computed property for backward compatibility
         public string FullName => $"{FirstName} {LastName}";
 
         // Navigation properties
         public Role Role { get; set; } = null!;
         public Hospital Hospital { get; set; } = null!;
+
+        [ForeignKey("AmbulanceId")]
+        public Ambulance? Ambulance { get; set; }
+
         public ICollection<Case> Cases { get; set; } = new List<Case>();
         public ICollection<AuditLog> AuditLogs { get; set; } = new List<AuditLog>();
     }

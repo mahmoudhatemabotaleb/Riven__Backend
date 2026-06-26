@@ -41,6 +41,7 @@ namespace RivenBackend.Controllers
                     RoleName = u.Role.RoleName,
                     HospitalId = u.HospitalId,
                     HospitalName = u.Hospital.Name,
+                    AmbulanceId = u.AmbulanceId,
                     AccountCreationDate = u.AccountCreationDate,
                     ProfilePicture = u.ProfilePicture
                 }).ToListAsync();
@@ -69,6 +70,7 @@ namespace RivenBackend.Controllers
                 RoleName = u.Role.RoleName,
                 HospitalId = u.HospitalId,
                 HospitalName = u.Hospital.Name,
+                AmbulanceId = u.AmbulanceId,
                 AccountCreationDate = u.AccountCreationDate,
                 ProfilePicture = u.ProfilePicture
             };
@@ -97,6 +99,7 @@ namespace RivenBackend.Controllers
                 RoleName = u.Role.RoleName,
                 HospitalId = u.HospitalId,
                 HospitalName = u.Hospital.Name,
+                AmbulanceId = u.AmbulanceId,
                 AccountCreationDate = u.AccountCreationDate,
                 ProfilePicture = u.ProfilePicture
             };
@@ -153,6 +156,7 @@ namespace RivenBackend.Controllers
                     RoleName = u.Role.RoleName,
                     HospitalId = u.HospitalId,
                     HospitalName = u.Hospital.Name,
+                    AmbulanceId = u.AmbulanceId,
                     AccountCreationDate = u.AccountCreationDate,
                     ProfilePicture = u.ProfilePicture
                 }).ToListAsync();
@@ -172,6 +176,7 @@ namespace RivenBackend.Controllers
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
                 RoleId = dto.RoleId,
                 HospitalId = dto.HospitalId,
+                AmbulanceId = dto.AmbulanceId,
                 Status = dto.Status,
                 AccountCreationDate = DateTime.Now,
                 ProfilePicture = dto.ProfilePicture
@@ -189,6 +194,7 @@ namespace RivenBackend.Controllers
                 Status = u.Status,
                 RoleId = u.RoleId,
                 HospitalId = u.HospitalId,
+                AmbulanceId = u.AmbulanceId,
                 AccountCreationDate = u.AccountCreationDate,
                 ProfilePicture = u.ProfilePicture
             });
@@ -208,6 +214,7 @@ namespace RivenBackend.Controllers
             u.Status = dto.Status;
             u.RoleId = dto.RoleId;
             u.HospitalId = dto.HospitalId;
+            u.AmbulanceId = dto.AmbulanceId;
             u.ProfilePicture = dto.ProfilePicture;
             await _context.SaveChangesAsync();
             return NoContent();
