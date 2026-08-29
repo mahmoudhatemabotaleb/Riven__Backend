@@ -175,3 +175,20 @@ Configured for `http://localhost:4200` in `appsettings.json` → `Cors:AllowedOr
 
 
 Private — Riven Stroke System
+
+### Authors
+Nour Yasser Mansour .NET Developer
+
+LinkedIn: https://www.linkedin.com/in/nour-yasser-a68474356
+
+GitHub: https://github.com/nour136
+
+
+Mahmoud Hattem  .NET Developer
+
+LinkedIn: https://www.linkedin.com/in/mahmoud-abotaleb-7b0aa824a/
+
+GitHub: https://github.com/mahmoudhatemabotaleb
+
+
+
